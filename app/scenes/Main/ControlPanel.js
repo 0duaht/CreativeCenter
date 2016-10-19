@@ -11,7 +11,7 @@ import {
 import styles from 'styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setMainIndex, setMainTitle } from 'actions'
+import { setMainIndex } from 'actions'
 import ImageBackground from 'components/image_background'
 import UtilityMethods from 'services/utilityMethods';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -20,7 +20,6 @@ import drawerArray from 'constants/drawer';
 class ControlPanel extends Component {
   selected = (index, title) => {
     this.props.setMainIndex(index);
-    this.props.setMainTitle(title);
     this.props.closeDrawer();
   }
 
@@ -100,7 +99,7 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    setMainIndex, setMainTitle
+    setMainIndex
   }, dispatch)
 }
 

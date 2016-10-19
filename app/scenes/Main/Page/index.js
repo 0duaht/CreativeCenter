@@ -9,8 +9,9 @@ import {
   View,
 } from 'react-native';
 import Styles from 'styles';
-import ImageBackground from 'components/image_background'
-import FullContainer from 'components/full_container'
+import ImageBackground from 'components/image_background';
+import FullContainer from 'components/full_container';
+import VideoComponent from 'components/video';
 import NavBar from '../NavBar';
 import { MyMusic, New, Connect, Forum, Playlists } from './components';
 import { bindActionCreators } from 'redux';
@@ -38,7 +39,8 @@ class Page extends Component {
         return <Connect drawer={this.props.openDrawer}/>
       }
       case FORUM_INDEX: {
-        return <Forum drawer={this.props.openDrawer}/>
+        return <Forum drawer={this.props.openDrawer}
+                resetIndex={() => this.props.setMainIndex(0)}/>
       }
     }
   }
@@ -47,6 +49,7 @@ class Page extends Component {
     return (
       <FullContainer>
         {this.renderBasedOnIndex(this.props.index)}
+        <VideoComponent />
       </FullContainer>
     )
   }

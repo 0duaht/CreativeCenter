@@ -8,10 +8,11 @@ import Styles from 'styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Video from 'react-native-video'
 import {
-  setPlayingTitle, setPlayingArtist, setPlayingSource,
-  setPlayingShuffle, setPlayingRepeat
+  setPlayingTitle, setPlayingArtist,
+  setPlayingShuffle, setVideoSource, pauseVideo,
+  playVideo, stopVideo, setVideoCurrentTime,
+  toggleVideoPlay, setVideoRepeat, setVideoComponent
 } from 'actions'
 import RNFS from 'react-native-fs';
 import UtilityMethods from 'services/utilityMethods';
@@ -22,9 +23,7 @@ class Player extends Component {
     super(props);
     BackAndroid.addEventListener('hardwareBackPress', this.goBack)
     this.state = {
-      playing: true,
       iconPlay: true,
-      currentTime: 0,
       sliderValue: 0,
       startedSliding: false,
     }
@@ -35,6 +34,13 @@ class Player extends Component {
       this.props.navigator.pop();
       BackAndroid.removeEventListener('hardwareBackPress', this.goBack)
       return true;
+    }
+  }
+
+  componentWillMount(){
+    if (this.props.source === ''){
+      this.props.setVideoSource(UtilityMethods.mp3URL);
+      this.props.video.seek(0);
     }
   }
 
@@ -54,20 +60,6 @@ class Player extends Component {
           <Image
             source={Styles.musicImage}
             style={Styles.playerImage}>
-            <Video source={{uri: UtilityMethods.mp3URL}}
-              ref={(video) => this._video = video }
-              volume={1}
-              rate={1}
-              muted={false}
-              paused={!this.state.playing}
-              playInBackground={true}
-              playWhenInactive={true}
-              onLoad={this.onLoad}
-              onProgress={this.setProgress}
-              style={Styles.playerImage}
-              resizeMode="cover"
-              repeat={this.props.repeat}
-            />
           </Image>
         </View>
         <View style={Styles.playerControl}>
@@ -76,7 +68,7 @@ class Player extends Component {
             onSlidingComplete={this.endSliding}
             playInBackground={true}
             playWhenInactive={true}
-            value={this.state.duration ? this.state.currentTime/this.state.duration : 0}
+            value={this.props.duration ? this.props.currentTime/this.props.duration : 0}
           />
 
           <View style={Styles.playerButtons}>
@@ -102,43 +94,26 @@ class Player extends Component {
   }
 
   slideValueChange = value => {
-    this.setState({
-      playing: false
-    })
-    const currentTime = value * this.state.duration
+    if (this.props.playing) this.props.pauseVideo();
+    const currentTime = value * this.props.duration
     this.setState({
       startedSliding: true,
-      currentTime: currentTime
     });
-    this._video.seek(currentTime);
+    this.props.video.seek(currentTime);
+    this.props.setVideoCurrentTime(currentTime)
   }
 
   endSliding = value => {
     this.setState({startedSliding: false});
-    this.setState({
-      playing: true
-    })
+    if (this.props.playing) this.props.playVideo();
   }
 
   togglePlay = () => {
     this.setState({
-      playing: !this.state.playing,
-      iconPlay: !this.state.playing,
-      startedSliding: this.state.playing ? true : false
-    })
-  }
-
-  setProgress = (params) => {
-    if (this.state.startedSliding) return
-    if (!this.state.playing) return
-    this.setState({
-      currentTime: params.currentTime
-    })
-  }
-
-  onLoad = (params) => {
-    console.log('started');
-    this.setState({duration: params.duration})
+      iconPlay: !this.props.playing,
+      startedSliding: this.props.playing ? true : false
+    });
+    this.props.toggleVideoPlay();
   }
 
   toggleShuffle = () => {
@@ -146,7 +121,7 @@ class Player extends Component {
   }
 
   toggleRepeat = () => {
-    this.props.setPlayingRepeat(!this.props.repeat);
+    this.props.setVideoRepeat(!this.props.repeat);
   }
 }
 
@@ -154,16 +129,22 @@ mapStateToProps = state => {
   return {
     title: state.playing.title,
     artist: state.playing.artist,
-    source: state.playing.source,
     shuffle: state.playing.shuffle,
-    repeat: state.playing.repeat
+    playing: state.video.playing,
+    currentTime: state.video.currentTime,
+    source: state.video.source,
+    video: state.video.component,
+    duration: state.video.duration,
+    repeat: state.video.repeat,
   }
 }
 
 mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    setPlayingTitle, setPlayingArtist, setPlayingSource,
-    setPlayingShuffle, setPlayingRepeat
+    setPlayingTitle, setPlayingArtist,
+    setPlayingShuffle, setVideoSource,
+    setVideoCurrentTime, toggleVideoPlay, playVideo, pauseVideo,
+    setVideoRepeat, setVideoComponent
   }, dispatch)
 }
 

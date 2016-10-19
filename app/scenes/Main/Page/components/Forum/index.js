@@ -8,6 +8,7 @@ export class Forum extends Component {
     return (
       <Webview
         uri='http://www.nairaland.com'
+        callBack={this.props.resetIndex}
       />
     )
   }

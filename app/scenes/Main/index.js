@@ -7,7 +7,6 @@ import {
 } from 'react-native'
 
 import Drawer from 'react-native-drawer'
-
 import ControlPanel from './ControlPanel'
 import Page from './Page'
 import UtilityMethods from 'services/utilityMethods';

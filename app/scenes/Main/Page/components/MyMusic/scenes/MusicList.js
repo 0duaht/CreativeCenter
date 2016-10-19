@@ -5,8 +5,8 @@ import routes from 'constants/routes';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  setPlayingTitle, setPlayingArtist, setPlayingSource,
-  setPlayingShuffle, setPlayingRepeat
+  setPlayingTitle, setPlayingArtist,
+  setPlayingShuffle, setPlayingRepeat, stopVideo
 } from 'actions'
 import Styles from 'styles';
 
@@ -174,8 +174,8 @@ class MusicList extends Component {
   }
 
   openPlayer = (row) => {
+    // this.props.stopVideo();
     this.props.setPlayingTitle(row.title);
-    this.props.setPlayingSource(row.source);
     this.props.setPlayingArtist(row.artist);
     this.props.navigator.push({id: routes.MyMusic.PLAYER})
   }
@@ -190,8 +190,8 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    setPlayingTitle, setPlayingArtist, setPlayingSource,
-    setPlayingShuffle, setPlayingRepeat
+    setPlayingTitle, setPlayingArtist,
+    setPlayingShuffle, setPlayingRepeat, stopVideo
   }, dispatch)
 }
 

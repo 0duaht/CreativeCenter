@@ -6,7 +6,6 @@ import Styles from 'styles';
 
 export class PlaylistsList extends Component {
   render(){
-    console.log('gidfa');
     return (
       <View style={[Styles.allScreen, Styles.musicList]}>
       </View>

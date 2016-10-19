@@ -49,7 +49,7 @@ export default class CreativeCenter extends Component {
     return (
       <Provider store={store}>
         <Navigator
-          initialRoute={{id: routes.HOME}}
+          initialRoute={{id: routes.MAIN}}
           renderScene={this.renderScene}
           configureScene={() => ({
             ...Navigator.SceneConfigs.HorizontalSwipeJump,
