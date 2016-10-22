@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   View, ListView, Text, Image, TouchableOpacity,
-  BackAndroid, LayoutAnimation, Slider
+  BackAndroid, LayoutAnimation, Slider, TouchableHighlight
 } from 'react-native';
 import FullContainer from 'components/full_container';
 import Styles from 'styles';
@@ -40,7 +40,7 @@ class Player extends Component {
   componentWillMount(){
     if (this.props.source === ''){
       this.props.setVideoSource(UtilityMethods.mp3URL);
-      this.props.video.seek(0);
+      if (this.props.video) this.props.video.seek(0);
     }
   }
 
@@ -49,7 +49,7 @@ class Player extends Component {
   }
   render(){
     return (
-      <View style={Styles.full}>
+      <View style={Styles.allScreen}>
         <View style={Styles.playerHeader}>
           <View style={Styles.playerSongInfo}>
             <Text>{this.props.title}</Text>
@@ -72,21 +72,11 @@ class Player extends Component {
           />
 
           <View style={Styles.playerButtons}>
-            <TouchableOpacity onPress={this.toggleShuffle}>
-              <Icon name="random" style={[Styles.playerIcon, (this.props.shuffle ? {color: '#1e90ff'} : {})]} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Icon name="step-backward" style={Styles.playerIcon} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.togglePlay}>
-              <Icon name={this.state.iconPlay ? "pause" : "play"} style={Styles.playerIcon} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Icon name="step-forward" style={Styles.playerIcon} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.toggleRepeat}>
-              <Icon name="repeat" style={[Styles.playerIcon, (this.props.repeat ? {color: '#1e90ff'} : {})]} />
-            </TouchableOpacity>
+            <Icon name="random" style={[Styles.playerIcon, (this.props.shuffle ? {color: '#1e90ff'} : {})]} onPress={this.toggleShuffle}/>
+            <Icon name="step-backward" style={Styles.playerIcon} />
+            <Icon name={this.props.playing ? "pause" : "play"} style={Styles.playerIcon} onPress={this.togglePlay}/>
+            <Icon name="step-forward" style={Styles.playerIcon} />
+            <Icon name="repeat" style={[Styles.playerIcon, (this.props.repeat ? {color: '#1e90ff'} : {})]} onPress={this.toggleRepeat}/>
           </View>
         </View>
       </View>
@@ -109,6 +99,12 @@ class Player extends Component {
   }
 
   togglePlay = () => {
+    if (this.props.stopped){
+      this.props.setVideoSource(UtilityMethods.mp3URL);
+      this.props.video.seek(0);
+      this.props.playVideo();
+      return;
+    }
     this.setState({
       iconPlay: !this.props.playing,
       startedSliding: this.props.playing ? true : false
@@ -136,6 +132,7 @@ mapStateToProps = state => {
     video: state.video.component,
     duration: state.video.duration,
     repeat: state.video.repeat,
+    stopped: state.video.stopped
   }
 }
 

@@ -10,7 +10,7 @@ import {
 } from 'actions'
 import Styles from 'styles';
 
-class MusicList extends Component {
+class MusicHome extends Component {
   constructor(props){
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2})
@@ -27,30 +27,47 @@ class MusicList extends Component {
       {
         title: 'Without Reason',
         artist: 'The Fray'
-      },
-      {
-        title: 'No One',
-        artist: 'Alicia Keys'
-      },
-      {
-        title: 'Friday is Forever',
-        artist: 'We The Kings'
-      },
-      {
-        title: 'You Found Me',
-        artist: 'The Fray'
       }
       ])
     }
   }
   render(){
     return (
-      <View>
+      <View style={Styles.musicHome}>
+        <View style={Styles.musicHomeHeaderView}>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <Text style={Styles.musicHomeHeader}>Frequently Played</Text>
+          </View>
+          <Text style={Styles.musicHomeMore}>More</Text>
+        </View>
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
           style={Styles.musicListView}
-          removeClippedSubviews={false}
+        />
+
+        <View style={Styles.musicHomeHeaderView}>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <Text style={Styles.musicHomeHeader}>Recently Added</Text>
+          </View>
+          <Text style={Styles.musicHomeMore}>More</Text>
+        </View>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+          style={Styles.musicListView}
+        />
+
+        <View style={Styles.musicHomeHeaderView}>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Text style={Styles.musicHomeHeader}>Recently Played</Text>
+        </View>
+          <Text style={Styles.musicHomeMore}>More</Text>
+        </View>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+          style={Styles.musicListView}
         />
       </View>
     )
@@ -76,7 +93,6 @@ class MusicList extends Component {
       this.props.setVideoCurrentTime(0);
       this.props.playVideo();
     }
-    // this.props.stopVideo();
     this.props.setPlayingTitle(row.title);
     this.props.setPlayingArtist(row.artist);
     this.props.navigator.push({id: routes.MyMusic.PLAYER})
@@ -98,4 +114,4 @@ mapDispatchToProps = dispatch => {
   }, dispatch)
 }
 
-export const MusicListWrapper = connect(mapStateToProps, mapDispatchToProps)(MusicList);
+export const MusicHomeWrapper = connect(mapStateToProps, mapDispatchToProps)(MusicHome);

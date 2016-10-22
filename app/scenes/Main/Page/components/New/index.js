@@ -34,12 +34,12 @@ export class New extends Component {
     switch(route.id){
       case routes.New.PURCASE_LIST: {
         return (
-          <ScrollView style={{flex: 1}}>
+          <View style={{flex: 1}}>
             <NavBar onPress={this.props.drawer} />
             <PurchaseList
               navigator={navigator}
             />
-          </ScrollView>
+          </View>
         );
       }
     }

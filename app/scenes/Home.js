@@ -20,8 +20,9 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import store from '../store';
 import routes from 'constants/routes';
-import { setHomeView, setHomeBinding } from 'actions';
+import { setHomeView, setHomeBinding, setUserObject } from 'actions';
 import styles from 'styles';
 import LoadingScreen from 'components/loading_screen';
 import UtilityMethods from 'services/utilityMethods';
@@ -29,6 +30,7 @@ import AuthService from 'services/auth_service';
 import ImageBackground from 'components/image_background';
 import FullContainer from 'components/full_container';
 import InputContainer from 'components/input_container';
+import StorageHelper from 'services/storage_helper';
 
 class Home extends Component {
   loginUser = () => {
@@ -99,6 +101,10 @@ class Home extends Component {
     }
 
     BackAndroid.removeEventListener('hardwareBackPress', this.showAuth);
+    this.props.setUserObject({
+      email: this.state.loginEmail,
+      password: this.state.loginPassword,
+    });
     this.props.navigator.push({id: routes.MAIN});
   }
 
@@ -384,12 +390,13 @@ class Home extends Component {
 
 function mapStateToProps(state){
   return {
-    user: state.user
+    loggedIn: state.user.loggedIn
   }
 }
 
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
+    setUserObject
   }, dispatch)
 }
 

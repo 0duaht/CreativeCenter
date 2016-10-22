@@ -7,7 +7,7 @@ export class Forum extends Component {
   render() {
     return (
       <Webview
-        uri='http://www.nairaland.com'
+        uri='https://reddit.com'
         callBack={this.props.resetIndex}
       />
     )
