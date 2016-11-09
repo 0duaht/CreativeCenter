@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import styles from 'styles';
 import { connect } from 'react-redux';
+import routes from 'constants/routes';
 import { bindActionCreators } from 'redux';
-import { setMainIndex } from 'actions'
+import { setMainIndex, removeUserObject } from 'actions'
 import ImageBackground from 'components/image_background'
 import UtilityMethods from 'services/utilityMethods';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -49,9 +50,18 @@ class ControlPanel extends Component {
             })
           }
         </View>
-        <View style={styles.drawerFooter}></View>
+        <View style={styles.drawerFooter}>
+          <TouchableOpacity onPress={this.logOutUser}>
+            <Text>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
     )
+  }
+
+  logOutUser = () => {
+    this.props.removeUserObject();
+    this.props.navigator.push({id: routes.HOME})
   }
 
   stylingView = (index) => {
@@ -96,7 +106,7 @@ mapStateToProps = state => {
 
 mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    setMainIndex
+    setMainIndex, removeUserObject
   }, dispatch)
 }
 

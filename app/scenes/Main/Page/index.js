@@ -8,12 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Styles from 'styles';
 import ImageBackground from 'components/image_background';
 import FullContainer from 'components/full_container';
 import VideoComponent from 'components/video';
-import NavBar from '../NavBar';
-import { MyMusic, New, Connect, Forum, Playlists } from './components';
+import NavBar from 'components/navbar';
+import { MyMusic, New, Connect, Forum, Playlists } from './scenes';
 import { bindActionCreators } from 'redux';
 import { setMainIndex } from 'actions/index';
 import { connect } from 'react-redux';

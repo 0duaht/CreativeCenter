@@ -20,7 +20,6 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import store from '../store';
 import routes from 'constants/routes';
 import { setHomeView, setHomeBinding, setUserObject } from 'actions';
 import styles from 'styles';

@@ -1,1 +1,0 @@
-export { PurchaseList } from './PurchaseList';

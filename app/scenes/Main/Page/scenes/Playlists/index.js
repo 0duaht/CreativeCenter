@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, ListView, ScrollView, Text, Navigator } from 'react-native';
 import Styles from 'styles';
 import routes from 'constants/routes';
-import NavBar from '../../../NavBar';
+import NavBar from 'components/navbar';
 import { PlaylistsList } from './scenes';
 
 export class Playlists extends Component {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, ListView, ScrollView, Text, Navigator } from 'react-native';
 import Styles from 'styles';
 import routes from 'constants/routes';
-import NavBar from '../../../NavBar';
+import NavBar from 'components/navbar';
 import { MusicList, Player, MusicHome } from './scenes';
 import { TabViewAnimated, TabBarTop } from 'react-native-tab-view';
 import EStyleSheet from 'react-native-extended-stylesheet'
@@ -59,7 +59,6 @@ export class MyMusic extends Component {
     }
   }
   renderScene = (route, navigator) => {
-    console.log('state ', this.state)
     switch(route.id){
       case routes.MyMusic.MUSIC_LIST: {
         return (

@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { View, ListView, ScrollView, Text, Navigator } from 'react-native';
 import Styles from 'styles';
 import routes from 'constants/routes';
-import NavBar from '../../../NavBar';
-import { ConnectList } from './scenes';
+import NavBar from 'components/navbar';
+import { PurchaseList, SongPage } from './scenes';
 
-export class Connect extends Component {
+export class New extends Component {
   render(){
     return (
       <View style={[Styles.allScreen, {backgroundColor: 'white'}]}>
         <Navigator
           ref={(navigator) => this._navigator = navigator}
-          initialRoute={{id: routes.Connect.CONNECT_LIST}}
+          initialRoute={{id: routes.New.PURCHASE_LIST}}
           renderScene={this.renderScene}
           configureScene={
             (route, routeStack) => {
@@ -32,14 +32,26 @@ export class Connect extends Component {
 
   renderScene = (route, navigator) => {
     switch(route.id){
-      case routes.Connect.CONNECT_LIST: {
+      case routes.New.PURCHASE_LIST: {
         return (
-          <ScrollView style={{flex: 1}}>
+          <View style={{flex: 1}}>
             <NavBar onPress={this.props.drawer} />
-            <ConnectList
+            <PurchaseList
               navigator={navigator}
             />
-          </ScrollView>
+          </View>
+        );
+      }
+
+      case routes.New.SONG_PAGE: {
+        return (
+          <View style={{flex: 1}}>
+            <NavBar onPress={this.props.drawer} />
+            <SongPage
+              {...route.passProps}
+              navigator={navigator}
+            />
+          </View>
         );
       }
     }

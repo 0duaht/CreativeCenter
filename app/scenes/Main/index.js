@@ -28,7 +28,7 @@ export class Main extends Component {
         ref={(ref) => this._drawer = ref}
         type={UtilityMethods.drawerType}
         content={
-          <ControlPanel closeDrawer={this.closeDrawer} />
+          <ControlPanel closeDrawer={this.closeDrawer} navigator={this.props.navigator}/>
         }
         styles={{main: {shadowColor: '#000000', shadowOpacity: 0.3, shadowRadius: 15}}}
         onOpen={() => {

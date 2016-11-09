@@ -76,7 +76,6 @@ class MusicList extends Component {
       this.props.setVideoCurrentTime(0);
       this.props.playVideo();
     }
-    // this.props.stopVideo();
     this.props.setPlayingTitle(row.title);
     this.props.setPlayingArtist(row.artist);
     this.props.navigator.push({id: routes.MyMusic.PLAYER})

@@ -20,7 +20,7 @@ export default class CreativeCenter extends Component {
     super(props);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
     this.state = {
-      rehydrated: true
+      rehydrated: false
     }
   }
 
@@ -77,16 +77,14 @@ export default class CreativeCenter extends Component {
   }
 
   initialRoute = () => {
-    return {id: routes.MAIN};
-    // const loggedIn = store.getState().user.loggedIn
-    // if (loggedIn){
-    //   return {id: routes.MAIN};
-    // }else{
-    //   return {id: routes.HOME};
-    // }
+    const storeState = store.getState();
+    const loggedIn = storeState.user.loggedIn
+    if (loggedIn){
+      return {id: routes.MAIN}
+    }else{
+      return {id: routes.HOME}
+    }
   }
-
-  
 
   renderScene = (route, navigator) => {
     switch(route.id){

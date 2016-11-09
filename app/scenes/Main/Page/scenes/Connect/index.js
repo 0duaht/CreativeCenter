@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { View, ListView, ScrollView, Text, Navigator } from 'react-native';
 import Styles from 'styles';
 import routes from 'constants/routes';
-import NavBar from '../../../NavBar';
-import { PurchaseList } from './scenes';
+import NavBar from 'components/navbar';
+import { ConnectList } from './scenes';
 
-export class New extends Component {
+export class Connect extends Component {
   render(){
     return (
       <View style={[Styles.allScreen, {backgroundColor: 'white'}]}>
         <Navigator
           ref={(navigator) => this._navigator = navigator}
-          initialRoute={{id: routes.New.PURCASE_LIST}}
+          initialRoute={{id: routes.Connect.CONNECT_LIST}}
           renderScene={this.renderScene}
           configureScene={
             (route, routeStack) => {
@@ -32,14 +32,14 @@ export class New extends Component {
 
   renderScene = (route, navigator) => {
     switch(route.id){
-      case routes.New.PURCASE_LIST: {
+      case routes.Connect.CONNECT_LIST: {
         return (
-          <View style={{flex: 1}}>
+          <ScrollView style={{flex: 1}}>
             <NavBar onPress={this.props.drawer} />
-            <PurchaseList
+            <ConnectList
               navigator={navigator}
             />
-          </View>
+          </ScrollView>
         );
       }
     }

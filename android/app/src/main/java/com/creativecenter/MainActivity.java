@@ -5,6 +5,8 @@ import com.burnweb.rnpermissions.RNPermissionsPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+import android.os.Bundle;
+import android.view.WindowManager;
 
 public class MainActivity extends ReactActivity {
 
@@ -15,6 +17,12 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "CreativeCenter";
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
