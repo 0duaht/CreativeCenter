@@ -10,8 +10,8 @@ import Swiper from 'react-native-swiper';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  requestNewSongs, receiveNewSongs, newSongError, fetchNewSongs,
-  requestPopularSongs, receivePopularSongs, popularSongError, fetchPopularSongs
+  fetchNewSongs, fetchPopularSongs, fetchBannerLinks, startLoadingFirstBanner,
+  finishLoadingFirstBanner, startLoadingSecondBanner, finishLoadingSecondBanner
 } from 'actions';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 
@@ -30,6 +30,7 @@ class PurchaseList extends Component {
       selected: 'Tracks',
     }
 
+    if (this.props.banner.links.first == undefined) this.props.fetchBannerLinks();
     if (this.props.newSongs.songs._cachedRowCount == 0) this.props.fetchNewSongs();
     if (this.props.popularSongs.songs._cachedRowCount == 0) this.props.fetchPopularSongs();
   }
@@ -42,7 +43,7 @@ class PurchaseList extends Component {
 
   renderRow = (row) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => this.goToSongPage(row)}>
         <View style={Styles.musicListItem}>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
             <Image source={Styles.musicImage} style={Styles.musicListItemImage} />
@@ -76,7 +77,8 @@ class PurchaseList extends Component {
       id: routes.New.SONG_PAGE,
       passProps: {
         title: row.title,
-        artist: row.artist
+        artist: row.artist,
+        navigator: navigator
       }
     })
   }
@@ -138,7 +140,7 @@ class PurchaseList extends Component {
   }
 
   render(){
-    if (this.state.loading){
+    if (this.props.banner.loadingLinks || this.props.banner.loadingFirst || this.props.banner.loadingSecond){
       return <LoadingScreenBlank />
     }
 
@@ -146,8 +148,16 @@ class PurchaseList extends Component {
       <MenuContext animate={false} style={Styles.allScreen}>
         <View style={Styles.purchaseBanner}>
           <Swiper autoplay={true} width={EStylesheet.value('$fullWidth')} height={EStylesheet.value('$purchaseBannerHeight')} showsButtons={false} showsPagination={false}>
-            <Image source={Styles.bannerOne} style={{width: undefined, height: undefined, flex: 1}} resizeMode="cover"></Image>
-            <Image source={Styles.bannerTwo} style={{width: undefined, height: undefined, flex: 1}} resizeMode="cover"></Image>
+            <Image
+              source={{uri: this.props.banner.links.first}}
+              style={{width: undefined, height: undefined, flex: 1}}
+              resizeMode="cover">
+            </Image>
+            <Image
+              source={{uri: this.props.banner.links.second}}
+              style={{width: undefined, height: undefined, flex: 1}}
+              resizeMode="cover">
+            </Image>
           </Swiper>
         </View>
         <View style={Styles.listingSelection}>
@@ -191,13 +201,14 @@ mapStateToProps = state => {
   return {
     newSongs: state.song_list.newSongs,
     popularSongs: state.song_list.popularSongs,
+    banner: state.banner
   }
 }
 
 mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    requestNewSongs, receiveNewSongs, newSongError, fetchNewSongs,
-    requestPopularSongs, receivePopularSongs, popularSongError, fetchPopularSongs
+    fetchNewSongs, fetchPopularSongs, fetchBannerLinks, startLoadingFirstBanner,
+    finishLoadingFirstBanner, startLoadingSecondBanner, finishLoadingSecondBanner
   }, dispatch)
 }
 

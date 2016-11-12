@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ListView, Text, Image, Picker, Platform, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ListView, Text, Image, Picker, Platform, ScrollView, TouchableOpacity, BackAndroid } from 'react-native';
 import LoadingScreenBlank from 'components/loading_screen_blank';
 import routes from 'constants/routes';
 import Styles from 'styles';
@@ -12,11 +12,24 @@ import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-n
 export class SongPage extends Component {
   constructor(props){
     super(props);
+    BackAndroid.addEventListener('hardwareBackPress', this.goBack)
     this.state = {
       loading: true
     }
   }
 
+  goBack = () => {
+    if (this.props.navigator.getCurrentRoutes().length > 1){
+      this.props.navigator.pop();
+      BackAndroid.removeEventListener('hardwareBackPress', this.goBack)
+      return true;
+    }
+  }
+
+  componentWillUnmount(){
+    BackAndroid.removeEventListener('hardwareBackPress', this.goBack)
+  }
+  
   componentDidMount(){
     setTimeout(() => {
       this.setState({ loading: false })
