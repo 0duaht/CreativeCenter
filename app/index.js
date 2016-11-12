@@ -77,6 +77,7 @@ export default class CreativeCenter extends Component {
   }
 
   initialRoute = () => {
+    return {id: routes.MAIN}
     const storeState = store.getState();
     const loggedIn = storeState.user.loggedIn
     if (loggedIn){
