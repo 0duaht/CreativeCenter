@@ -7,9 +7,15 @@ import EStylesheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ModalPicker from 'react-native-modal-picker';
 import Swiper from 'react-native-swiper';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {
+  requestNewSongs, receiveNewSongs, newSongError, fetchNewSongs,
+  requestPopularSongs, receivePopularSongs, popularSongError, fetchPopularSongs
+} from 'actions';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 
-export class PurchaseList extends Component {
+class PurchaseList extends Component {
   constructor(props){
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2});
@@ -22,37 +28,10 @@ export class PurchaseList extends Component {
     this.state = {
       loading: true,
       selected: 'Tracks',
-      dataSource: ds.cloneWithRows([
-        {
-          title: 'Friday is Forever',
-          artist: 'We The Kings'
-        },
-        {
-          title: 'Friday is Forever',
-          artist: 'We The Kings'
-        },
-        {
-          title: 'You Found Me',
-          artist: 'The Fray'
-        },
-        {
-          title: 'Without Reason',
-          artist: 'The Fray'
-        },
-        {
-          title: 'No One',
-          artist: 'Alicia Keys'
-        },
-        {
-          title: 'Friday is Forever',
-          artist: 'We The Kings'
-        },
-        {
-          title: 'You Found Me',
-          artist: 'The Fray'
-        }
-      ])
     }
+
+    if (this.props.newSongs.songs._cachedRowCount == 0) this.props.fetchNewSongs();
+    if (this.props.popularSongs.songs._cachedRowCount == 0) this.props.fetchPopularSongs();
   }
 
   componentDidMount(){
@@ -63,8 +42,8 @@ export class PurchaseList extends Component {
 
   renderRow = (row) => {
     return (
-      <TouchableOpacity onPress={() => this.goToSongPage(row)}>
-        <View style={[Styles.musicListItem]}>
+      <TouchableOpacity>
+        <View style={Styles.musicListItem}>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
             <Image source={Styles.musicImage} style={Styles.musicListItemImage} />
             <View style={Styles.musicListInfoContainer}>
@@ -137,6 +116,27 @@ export class PurchaseList extends Component {
     )
   }
 
+  renderViewForSection = (object) => {
+    if (object.loading){
+      return <View style={Styles.purchaseListView}><LoadingScreenBlank /></View>
+    }else{
+      return (
+        <ListView
+          dataSource={object.songs}
+          renderRow={this.renderRow}
+          style={Styles.purchaseListView}
+          removeClippedSubviews={false}
+        />
+      )
+    }
+  }
+
+  renderMoreViewForSection = (loading) => {
+    if (!loading){
+      return <Text style={Styles.musicHomeMore}>See All</Text>
+    }
+  }
+
   render(){
     if (this.state.loading){
       return <LoadingScreenBlank />
@@ -163,14 +163,9 @@ export class PurchaseList extends Component {
                 </View>
               </View>
             </View>
-            <ListView
-              dataSource={this.state.dataSource}
-              renderRow={this.renderRow}
-              style={Styles.purchaseListView}
-              removeClippedSubviews={false}
-            />
+            {this.renderViewForSection(this.props.newSongs)}
             <View style={Styles.purchaseMoreView}>
-              <Text style={Styles.musicHomeMore}>See All</Text>
+              {this.renderMoreViewForSection(this.props.newSongs.loading)}
             </View>
 
 
@@ -181,14 +176,9 @@ export class PurchaseList extends Component {
                 </View>
               </View>
             </View>
-            <ListView
-              dataSource={this.state.dataSource}
-              renderRow={this.renderRow}
-              style={Styles.purchaseListView}
-              removeClippedSubviews={false}
-            />
+            {this.renderViewForSection(this.props.popularSongs)}
             <View style={Styles.purchaseMoreView}>
-              <Text style={Styles.musicHomeMore}>See All</Text>
+              {this.renderMoreViewForSection(this.props.popularSongs.loading)}
             </View>
           </ScrollView>
         </View>
@@ -196,3 +186,19 @@ export class PurchaseList extends Component {
     )
   }
 }
+
+mapStateToProps = state => {
+  return {
+    newSongs: state.song_list.newSongs,
+    popularSongs: state.song_list.popularSongs,
+  }
+}
+
+mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    requestNewSongs, receiveNewSongs, newSongError, fetchNewSongs,
+    requestPopularSongs, receivePopularSongs, popularSongError, fetchPopularSongs
+  }, dispatch)
+}
+
+export const PurchaseListWrapper = connect(mapStateToProps, mapDispatchToProps)(PurchaseList);
