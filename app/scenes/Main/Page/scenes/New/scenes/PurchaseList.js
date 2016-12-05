@@ -9,6 +9,7 @@ import ModalPicker from 'react-native-modal-picker';
 import Swiper from 'react-native-swiper';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Types from 'constants/types';
 import {
   fetchNewSongs, fetchPopularSongs, fetchBannerLinks, startLoadingFirstBanner,
   finishLoadingFirstBanner, startLoadingSecondBanner, finishLoadingSecondBanner
@@ -18,21 +19,21 @@ import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-n
 class PurchaseList extends Component {
   constructor(props){
     super(props);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2});
     this.data = [
-      { key: 0, label: 'Tracks' },
-      { key: 1, label: 'Albums' },
-      { key: 2, label: 'Artists' },
-      { key: 3, label: 'Genres' }
+      { key: Types.TRACKS, label: 'Tracks' },
+      { key: Types.ALBUMS, label: 'Albums' },
+      { key: Types.ARTISTS, label: 'Artists' },
+      { key: Types.GENRES, label: 'Genres' }
     ];
     this.state = {
       loading: true,
       selected: 'Tracks',
+      selectedIndex: 0
     }
 
     if (this.props.banner.links.first == undefined) this.props.fetchBannerLinks();
-    if (this.props.newSongs.songs._cachedRowCount == 0) this.props.fetchNewSongs();
-    if (this.props.popularSongs.songs._cachedRowCount == 0) this.props.fetchPopularSongs();
+    if (this.props.newSongs.songs._cachedRowCount == 0) this.props.fetchNewSongs(this.state.selectedIndex);
+    if (this.props.popularSongs.songs._cachedRowCount == 0) this.props.fetchPopularSongs(this.state.selectedIndex);
   }
 
   componentDidMount(){
@@ -45,13 +46,7 @@ class PurchaseList extends Component {
     return (
       <TouchableOpacity onPress={() => this.goToSongPage(row)}>
         <View style={Styles.musicListItem}>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Image source={Styles.musicImage} style={Styles.musicListItemImage} />
-            <View style={Styles.musicListInfoContainer}>
-              <Text style={{fontFamily: 'Trebuchet MS'}}>{row.title}</Text>
-              <Text style={Styles.musicListInfoArtist}>{row.artist}</Text>
-            </View>
-          </View>
+          {this.contentRenderer(this.state.selectedIndex, row)}
           <View style={Styles.padRight}>
             <Menu onSelect={this.setMenuSelection}>
               <MenuTrigger disabled={false} style={{padding: 10}}>
@@ -70,6 +65,37 @@ class PurchaseList extends Component {
         </View>
       </TouchableOpacity>
     )
+  }
+
+  rowContentTracks = (row) => {
+    return (
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Image source={Styles.musicImage} style={Styles.musicListItemImage} />
+        <View style={Styles.musicListInfoContainer}>
+          <Text style={{fontFamily: 'Trebuchet MS'}}>{row.title}</Text>
+          <Text style={Styles.musicListInfoArtist}>{row.artist}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  rowContentAlbums = (row) => {
+    return (
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Image source={Styles.musicImage} style={Styles.musicListItemImage} />
+        <View style={Styles.musicListInfoContainer}>
+          <Text style={{fontFamily: 'Trebuchet MS'}}>{row.name}</Text>
+          <Text style={Styles.musicListInfoArtist}>{row.artist}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  contentRenderer = (requestType, row) => {
+    switch(requestType){
+      case Types.TRACKS: return this.rowContentTracks(row)
+      case Types.ALBUMS: return this.rowContentAlbums(row)
+    }
   }
 
   goToSongPage = (row) => {
@@ -98,7 +124,11 @@ class PurchaseList extends Component {
       <Picker
         style={Styles.pickerWidth}
         selectedValue={this.state.selected}
-        onValueChange={(option) => this.setState({ selected: option})}>
+        onValueChange={(option, index) => {
+          this.setState({ selected: option, selectedIndex: index })
+          this.props.fetchNewSongs(index);
+          this.props.fetchPopularSongs(index);
+        }}>
         {
           this.data.map((row, index) => {
             return <Picker.Item key={index} label={row.label} value={row.label} />    
@@ -113,7 +143,11 @@ class PurchaseList extends Component {
       <ModalPicker
       data={this.data}
       initValue={this.state.selected}
-      onChange={(option) => this.setState({ selected: option.label})}
+      onChange={(option) => {
+        this.setState({ selected: option.label})
+        this.props.fetchNewSongs(index);
+        this.props.fetchPopularSongs(index);
+      }}
       />
     )
   }
