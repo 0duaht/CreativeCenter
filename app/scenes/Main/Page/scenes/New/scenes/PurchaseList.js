@@ -67,25 +67,13 @@ class PurchaseList extends Component {
     )
   }
 
-  rowContentTracks = (row) => {
+  rowContent = (rowHead, rowSub) => {
     return (
       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
         <Image source={Styles.musicImage} style={Styles.musicListItemImage} />
         <View style={Styles.musicListInfoContainer}>
-          <Text style={{fontFamily: 'Trebuchet MS'}}>{row.title}</Text>
-          <Text style={Styles.musicListInfoArtist}>{row.artist}</Text>
-        </View>
-      </View>
-    )
-  }
-
-  rowContentAlbums = (row) => {
-    return (
-      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Image source={Styles.musicImage} style={Styles.musicListItemImage} />
-        <View style={Styles.musicListInfoContainer}>
-          <Text style={{fontFamily: 'Trebuchet MS'}}>{row.name}</Text>
-          <Text style={Styles.musicListInfoArtist}>{row.artist}</Text>
+          <Text style={{fontFamily: 'Trebuchet MS'}}>{rowHead}</Text>
+          <Text style={Styles.musicListInfoArtist}>{rowSub}</Text>
         </View>
       </View>
     )
@@ -93,8 +81,9 @@ class PurchaseList extends Component {
 
   contentRenderer = (requestType, row) => {
     switch(requestType){
-      case Types.TRACKS: return this.rowContentTracks(row)
-      case Types.ALBUMS: return this.rowContentAlbums(row)
+      case Types.TRACKS: return this.rowContent(row.title, row.artist)
+      case Types.ALBUMS: return this.rowContent(row.name, row.artist)
+      case Types.ARTISTS: return this.rowContent(row.name, row.artist)
     }
   }
 
@@ -145,8 +134,8 @@ class PurchaseList extends Component {
       initValue={this.state.selected}
       onChange={(option) => {
         this.setState({ selected: option.label})
-        this.props.fetchNewSongs(index);
-        this.props.fetchPopularSongs(index);
+        this.props.fetchNewSongs(this.state.selectedIndex);
+        this.props.fetchPopularSongs(this.state.selectedIndex);
       }}
       />
     )

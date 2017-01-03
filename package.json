@@ -15,11 +15,12 @@
     "react-native-fetch-blob": "^0.9.6",
     "react-native-fs": "^2.0.1-rc.2",
     "react-native-keyboard-aware-scroll-view": "^0.2.1",
+    "react-native-menu": "file:vendor/react-native-menu",
+    "react-native-modal-picker": "0.0.16",
     "react-native-scrollable-tab-view": "^0.6.0",
     "react-native-slider": "^0.9.1",
     "react-native-swiper": "^1.5.1",
     "react-native-tab-view": "file:vendor/react-native-tab-view",
-    "react-native-menu": "file:vendor/react-native-menu",
     "react-native-vector-icons": "^2.1.0",
     "react-native-video": "^0.9.0",
     "react-redux": "^4.4.5",
@@ -27,5 +28,8 @@
     "redux-actions": "^0.12.0",
     "redux-persist": "^4.0.0-alpha6",
     "redux-thunk": "^2.1.0"
+  },
+  "devDependencies": {
+    "reactotron": "^0.9.0"
   }
 }
